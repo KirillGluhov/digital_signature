@@ -245,7 +245,7 @@ function cipherHash(privateKey, hash)
     const key = ec.keyFromPrivate(privateKey, 'hex'); // по значению приватного ключа - строки, создаёт объект - ключ с методами из библиотеки elliptic
     const signature = key.sign(hash); // шифрование хеша с использованием закрытого ключа
     return signature.toDER('hex'); // представление подписи в виде одной строки (по умолчанию - подпись состоит из r и s)
-}s
+}
 
 async function saveInDB(publicKey, hash)
 {
