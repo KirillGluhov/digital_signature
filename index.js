@@ -110,18 +110,27 @@ app.post('/validate', verify.single('document'), async (req, res) => {
         const hash = await generateHash(newDocument.path);
         const publicKey = await findInDB(hash);
 
-        const key = ec.keyFromPublic(publicKey, 'hex');
-
-        const isValid = key.verify(hash, signature);
-
-        if (isValid)
+        if (publicKey)
         {
-            res.send("Подпись верна");
+            const key = ec.keyFromPublic(publicKey, 'hex');
+
+            const isValid = key.verify(hash, signature);
+    
+            if (isValid)
+            {
+                res.send("Подпись верна");
+            }
+            else
+            {
+                res.send("Подпись неверна");
+            }
         }
         else
         {
             res.send("Подпись неверна");
         }
+
+       
     });
 
     /*
@@ -224,7 +233,12 @@ async function findInDB(hash)
     {
         if (info.rows != null)
         {
-            return info.rows[0].public_key;
+            if (info.rows.length > 0)
+            {
+                return info.rows[0].public_key;
+            }
+
+            return null;
         }
 
         return null;
